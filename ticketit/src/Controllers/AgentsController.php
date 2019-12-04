@@ -1,12 +1,13 @@
 <?php
 
 namespace Kordy\Ticketit\Controllers;
-
+use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Kordy\Ticketit\Models\Agent;
 use Kordy\Ticketit\Models\Setting;
+use Illuminate\Support\Facades\Auth; 
 use Kordy\Ticketit\Helpers\LaravelVersion;
 
 class AgentsController extends Controller
@@ -24,7 +25,12 @@ class AgentsController extends Controller
 
         return view('ticketit::admin.agent.create', compact('users'));
     }
-
+    public function changepass()
+    {
+        
+        $status = Auth::user();
+        return view('ticketit::misc.chgpw', compact('status'));
+    }
     public function store(Request $request)
     {
     	$rules = [

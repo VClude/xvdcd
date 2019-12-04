@@ -73,7 +73,7 @@
     @include('ticketit::shared.header')
     <div class="app-container">
     <div id="ignore-sidebar" class="app-sidebar app-navigation  app-navigation-fixed app-navigation-style-light dir-left" data-type="close-other">
-        <a href="index.html" class="app-navigation-logo"></a>
+        <a href="#" class="app-navigation-logo"></a>
         <nav>
             <ul>
             
@@ -224,10 +224,11 @@
         <li>
             <div class="contact-controls">
                 <div class="dropdown">
+
                     <button type="button" class="btn btn-default btn-icon" data-toggle="dropdown"><span class="icon-layers"></span></button>
                     <ul class="dropdown-menu dropdown-left">
-                        <li><a href="../profile-edit.html"><span class="icon-users"></span> Ubah Profil</a></li>
-                        <li><a href="../pwd_chng.html"><span class="icon-lock"></span> Ubah Password</a></li>
+                        <li><a href="{{ route($setting->grab('admin_route').'.user.myedit') }}"><span class="icon-users"></span> Ubah Profil</a></li>
+                        <li><a href="{{ action('\Kordy\Ticketit\Controllers\AgentsController@changepass') }}"><span class="icon-lock"></span> Ubah Password</a></li>
                         <li> <a href="{{ route('logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();"><span class="icon-power-switch"></span> Logout</a></li>
                     </ul>
@@ -280,7 +281,7 @@
             </div>
 
 
-        @if(View::hasSection('ticketit_content'))
+        @if(View::hasSection('ticketit_content') || View::hasSection('ticketit_extra_content'))
         @if($errors->first() != '')
     <div class="container">
         <div class="alert alert-danger">
@@ -322,3 +323,4 @@
         </div>
     </div>
 @stop
+

@@ -1,7 +1,7 @@
 <?php
 
 namespace Kordy\Ticketit\Controllers;
-
+use Illuminate\Support\Facades\Auth; 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use App\User;
 use Kordy\Ticketit\Helpers\LaravelVersion;
 use Toast;
+use Validator;
 class StetusesController extends Controller
 {
     /**
@@ -104,11 +105,19 @@ class StetusesController extends Controller
     {
         $new = false;
         $status = User::findOrFail($id);
-        if($status->ticketit_admin == 1){
+        if($status->ticketit_admin == 0){
             Toast::warning('Anda Tidak Bisa Mengubah data Manager');
             $statuses = User::paginate(10);
             return view('ticketit::admin.user.index', compact('statuses'));
         }
+        return view('ticketit::admin.user.edit', compact('status','new'));
+    }
+
+    public function myedit()
+    {
+        $new = false;
+        $userget = Auth::user();
+        $status = User::find($userget->id);
         return view('ticketit::admin.user.edit', compact('status','new'));
     }
     /**
@@ -133,10 +142,54 @@ class StetusesController extends Controller
         Session::flash('status', 'User Detail telah diupdate ');
 
         \Cache::forget('ticketit::users');
-
+        if(strpos(url()->previous(), "myedit") == false){
         return redirect()->action('\Kordy\Ticketit\Controllers\StatusesController@userList');
+        }
+        else{
+        return redirect()->action('\Kordy\Ticketit\Controllers\DashboardController@index'); 
+        }
     }
 
+
+    public function changePwd(Request $request)
+    {
+        $validator = Validator::make($request->all(), [ 
+            "oldpassword" => 'required',
+            "newpassword" => 'required|min:3|max:50',
+            "verifpassword" => 'required|min:3|max:50'
+        ]);
+        $userget = Auth::user();
+        $status = User::find($userget->id);
+            if ($validator->fails()) { 
+                Session::flash('warning', 'Verifikasi Password tidak Sesuai');
+
+                \Cache::forget('ticketit::users');
+        
+                return back();           
+            }
+            else if (Hash::check($request->input('oldpassword'), $userget->password)) {
+                $hashpw = bcrypt($request->input('newpassword')); 
+                $status->update(['password' => $hashpw]);
+
+                Session::flash('status', 'Password Berhasil Diubah');
+
+                \Cache::forget('ticketit::users');
+        
+                return redirect()->action('\Kordy\Ticketit\Controllers\DashboardController@index');
+            }
+        else{
+            Session::flash('warning', 'Password lama Tidak sesuai');
+
+            \Cache::forget('ticketit::users');
+    
+            return back();
+        }
+
+
+
+    }
+
+    
     /**
      * Remove the specified resource from storage.
      *

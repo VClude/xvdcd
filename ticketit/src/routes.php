@@ -22,8 +22,14 @@ Route::group(['middleware' => \Kordy\Ticketit\Helpers\LaravelVersion::authMiddle
             ->name("$main_route.data");
     Route::post("$main_route_path/ineedstats/", 'Kordy\Ticketit\Controllers\TicketsController@agentData')
             ->name("$main_route.agentdata");
+    Route::get("$admin_route_path/myedit/", 'Kordy\Ticketit\Controllers\StetusesController@myedit')
+            ->name("$admin_route.user.myedit");
     Route::post("$main_route_path/ineedstatus/", 'Kordy\Ticketit\Controllers\RecapController@agentRedata')
             ->name("$main_route.agentredata");
+   Route::post("$admin_route_path/changepass/", 'Kordy\Ticketit\Controllers\StetusesController@changePwd')
+            ->name("$admin_route.changepass");
+    Route::get("$admin_route_path/changepass/", 'Kordy\Ticketit\Controllers\AgentsController@changepass')
+            ->name("$admin_route.changepass");
     $field_name = last(explode('/', $main_route_path));
     Route::resource($main_route_path, 'Kordy\Ticketit\Controllers\TicketsController', [
             'names' => [
@@ -133,6 +139,7 @@ Route::group(['middleware' => \Kordy\Ticketit\Helpers\LaravelVersion::authMiddle
                 'show'    => "$admin_route.agent.show",
                 'destroy' => "$admin_route.agent.destroy",
                 'edit'    => "$admin_route.agent.edit",
+                'changepass'  => "$admin_route.agent.changepass",
             ],
         ]);
 
@@ -194,6 +201,7 @@ Route::group(['middleware' => \Kordy\Ticketit\Helpers\LaravelVersion::authMiddle
                 'show'    => "$admin_route.administrator.show",
                 'destroy' => "$admin_route.administrator.destroy",
                 'edit'    => "$admin_route.administrator.edit",
+                'changepass'  => "$admin_route.administrator.changepass",
             ],
         ]);
 

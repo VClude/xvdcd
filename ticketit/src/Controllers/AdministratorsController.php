@@ -58,7 +58,10 @@ class AdministratorsController extends Controller
 
         return view('ticketit::admin.administrator.create', compact('users'));
     }
-
+    public function changepass()
+    {
+        return view('ticketit::misc.chgpw');
+    }
     public function store(Request $request)
     {
         $administrators_list = $this->addAdministrators($request->input('administrators'));
